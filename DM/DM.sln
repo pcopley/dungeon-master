@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DM.Dice.Core", "DM.Dice.Core\DM.Dice.Core.csproj", "{6297F378-1264-4303-83DB-6C5933336BF1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C17463EC-1FDE-46AA-BCD1-102C83395E23}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dice", "Dice", "{D9F63CEA-9100-44BE-BAA4-87E5FD928F21}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DM.Dice.API", "DM.Dice.API\DM.Dice.API.csproj", "{C46D4814-A2F7-4623-8CD2-B041E2A9A7CC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DM.Dice.API.TestClient", "DM.Dice.API.TestClient\DM.Dice.API.TestClient.csproj", "{C819C058-4B95-43D9-B319-23EBD7B1E2C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DM.Dice.Core.Tests", "DM.Dice.Core.Tests\DM.Dice.Core.Tests.csproj", "{9E3C8D9A-5EB8-4FF4-BF85-1FFF4BCD4EC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6297F378-1264-4303-83DB-6C5933336BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6297F378-1264-4303-83DB-6C5933336BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6297F378-1264-4303-83DB-6C5933336BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6297F378-1264-4303-83DB-6C5933336BF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C46D4814-A2F7-4623-8CD2-B041E2A9A7CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C46D4814-A2F7-4623-8CD2-B041E2A9A7CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C46D4814-A2F7-4623-8CD2-B041E2A9A7CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C46D4814-A2F7-4623-8CD2-B041E2A9A7CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C819C058-4B95-43D9-B319-23EBD7B1E2C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C819C058-4B95-43D9-B319-23EBD7B1E2C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C819C058-4B95-43D9-B319-23EBD7B1E2C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C819C058-4B95-43D9-B319-23EBD7B1E2C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E3C8D9A-5EB8-4FF4-BF85-1FFF4BCD4EC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E3C8D9A-5EB8-4FF4-BF85-1FFF4BCD4EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E3C8D9A-5EB8-4FF4-BF85-1FFF4BCD4EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E3C8D9A-5EB8-4FF4-BF85-1FFF4BCD4EC9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6297F378-1264-4303-83DB-6C5933336BF1} = {D9F63CEA-9100-44BE-BAA4-87E5FD928F21}
+		{C46D4814-A2F7-4623-8CD2-B041E2A9A7CC} = {D9F63CEA-9100-44BE-BAA4-87E5FD928F21}
+		{C819C058-4B95-43D9-B319-23EBD7B1E2C3} = {D9F63CEA-9100-44BE-BAA4-87E5FD928F21}
+		{9E3C8D9A-5EB8-4FF4-BF85-1FFF4BCD4EC9} = {D9F63CEA-9100-44BE-BAA4-87E5FD928F21}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2AAE603C-2FC9-46C4-B04A-D40E416EDF12}
+	EndGlobalSection
+EndGlobal

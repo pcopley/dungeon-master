@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "DM.Dice.Core.Protos";
+
+package DM.Dice.Core;
+
+service DiceRoller {
+    rpc Roll (RollRequest) returns (stream RollResult);
+}
+
+message RollRequest {
+    string request = 1;
+}
+
+message RollResult {
+    int32 type = 1;
+    int32 result = 2;
+}
