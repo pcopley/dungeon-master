@@ -56,12 +56,30 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="dbo" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="AbilityScores.sql" />
-    <Build Include="Skills.sql" />
+    <Build Include="dbo\AbilityScores.sql" />
+    <Build Include="dbo\Conditions.sql" />
+    <Build Include="dbo\DamageTypes.sql" />
+    <Build Include="dbo\MagicSchools.sql" />
+    <Build Include="dbo\WeaponProperties.sql" />
+    <Build Include="dbo\Proficiencies.sql" />
+    <Build Include="dbo\Equipment.sql" />
+    <Build Include="dbo\Languages.sql" />
+    <Build Include="dbo\Spells.sql" />
+    <Build Include="dbo\Features.sql" />
+    <Build Include="dbo\Traits.sql" />
+    <Build Include="dbo\Classes.sql" />
+    <Build Include="dbo\Subclasses.sql" />
+    <Build Include="dbo\Races.sql" />
+    <Build Include="dbo\Subraces.sql" />
+    <Build Include="dbo\Monsters.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="DM.Data.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Skills.sql" />
   </ItemGroup>
 </Project>

@@ -7,4 +7,53 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Source" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="208c5962-4aa1-4648-a1e1-9512895d0530" ChangeDateTime="04/17/2020 21:07:54">
+    <Property Name="ElementName" Value="[dbo].[Languages].[FullName]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Languages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TypicalSpeakers" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="5514865e-5706-4967-a6cc-41daec2f37c1" ChangeDateTime="04/17/2020 21:08:08">
+    <Property Name="ElementName" Value="[dbo].[Languages].[Description]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Languages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Type" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="56282328-08f5-4228-bd74-749088a14e38" ChangeDateTime="04/17/2020 21:09:07">
+    <Property Name="ElementName" Value="[dbo].[Languages].[ScriptId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Languages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Script" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bcaeb7e7-45be-42af-9d5b-356613cb9920" ChangeDateTime="04/17/2020 21:19:38">
+    <Property Name="ElementName" Value="[dbo].[Equipment].[Range]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Equipment]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Component_Verbal" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1496883d-ff18-48d4-bfbf-0acbb3dc195e" ChangeDateTime="04/17/2020 22:09:37">
+    <Property Name="ElementName" Value="[dbo].[Spells].[Component_Focus]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Spells]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RequiresFocus" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9b52e3cd-cc29-42de-9e12-b2eca6470ffe" ChangeDateTime="04/17/2020 22:10:45">
+    <Property Name="ElementName" Value="[dbo].[Spells].[RequiresFocus]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Spells]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Concentration" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ee089679-3008-4879-8ed4-6d2bd41c4ba5" ChangeDateTime="04/18/2020 11:58:37">
+    <Property Name="ElementName" Value="[dbo].[Subclasses].[Level]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Subclasses]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SubclassFlavor" />
+  </Operation>
 </Operations>
