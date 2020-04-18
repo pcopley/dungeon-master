@@ -4,6 +4,8 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
 {
     public class Feature
     {
+        public ReferenceData Class { get; set; }
+
         [JsonProperty("desc")]
         public string[] Description { get; set; }
 
@@ -21,5 +23,7 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
         /// </summary>
         [JsonProperty("url")]
         public string Source { get; set; }
+
+        public ReferenceData Subclass { get; set; }
     }
 }

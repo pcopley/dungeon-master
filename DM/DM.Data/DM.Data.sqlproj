@@ -75,6 +75,13 @@
     <Build Include="dbo\Races.sql" />
     <Build Include="dbo\Subraces.sql" />
     <Build Include="dbo\Monsters.sql" />
+    <Build Include="dbo\ClassProficiencies.sql" />
+    <Build Include="dbo\RaceProficiencies.sql" />
+    <Build Include="dbo\RacialBonuses.sql" />
+    <Build Include="dbo\RaceLanguageDefaults.sql" />
+    <Build Include="dbo\RacialTraits.sql" />
+    <Build Include="dbo\ClassSpells.sql" />
+    <Build Include="dbo\SubclassSpells.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="DM.Data.refactorlog" />

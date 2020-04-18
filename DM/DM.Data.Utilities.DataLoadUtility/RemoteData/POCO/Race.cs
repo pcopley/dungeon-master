@@ -4,6 +4,9 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
 {
     public class Race
     {
+        [JsonProperty("ability_bonuses")]
+        public ReferenceData[] AbilityBonuses { get; set; }
+
         public string Age { get; set; }
 
         public string Alignment { get; set; }
@@ -13,8 +16,11 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
 
         public string Index { get; set; }
 
-        [JsonProperty("language_description")]
+        [JsonProperty("language_desc")]
         public string LanguageDescription { get; set; }
+
+        [JsonProperty("languages")]
+        public ReferenceData[] Languages { get; set; }
 
         public string Name { get; set; }
 
@@ -30,5 +36,7 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
         public string Source { get; set; }
 
         public int Speed { get; set; }
+
+        public ReferenceData[] Traits { get; set; }
     }
 }

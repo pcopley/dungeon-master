@@ -56,4 +56,25 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="SubclassFlavor" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="b187a50c-fd8f-4f00-883b-656bc56617cd" ChangeDateTime="04/18/2020 19:15:23">
+    <Property Name="ElementName" Value="[dbo].[ClassProficiencies].[ClassProficiencyId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ClassProficiencies]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="aff744a1-1a1c-4716-a73d-78a75872102d" ChangeDateTime="04/18/2020 20:26:22">
+    <Property Name="ElementName" Value="[dbo].[RacialBonuses].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RacialBonuses]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RaceId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9b9ba359-74a1-4b88-92a5-5c97ce79528d" ChangeDateTime="04/18/2020 23:20:52">
+    <Property Name="ElementName" Value="[dbo].[ClassSpells].[ProficiencyId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ClassSpells]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SpellId" />
+  </Operation>
 </Operations>

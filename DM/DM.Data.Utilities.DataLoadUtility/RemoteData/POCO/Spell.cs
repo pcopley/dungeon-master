@@ -10,6 +10,8 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
         [JsonProperty("casting_time")]
         public string CastingTime { get; set; }
 
+        public ReferenceData[] Classes { get; set; }
+
         [JsonProperty("components")]
         public string[] Components { get; set; }
 
@@ -57,5 +59,7 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
         /// </summary>
         [JsonProperty("url")]
         public string Source { get; set; }
+
+        public ReferenceData[] Subclasses { get; set; }
     }
 }

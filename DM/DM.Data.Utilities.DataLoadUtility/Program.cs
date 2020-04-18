@@ -25,30 +25,34 @@ namespace DM.Data.Utilities.DataLoadUtility
         {
             _apiHelper = new ApiHelper();
 
-            await TruncateAllTheThings();
+            //await TruncateAllTheThings();
 
-            // Types with no dependencies
-            await LoadTypesWithoutDependencies();
+            //// Types with no dependencies
+            //await LoadTypesWithoutDependencies();
 
-            // Types with dependencies, but loading the data first
-            await LoadSkills();
+            //// Types with dependencies, but loading the data first
+            //await LoadSkills();
 
-            await LoadSpells();
+            //await LoadSpells();
 
-            await LoadFeatures();
+            //await LoadFeatures();
 
-            await LoadTraits();
+            //await LoadTraits();
 
-            await LoadClasses();
-            await LoadSubclasses();
+            //await LoadClasses();
+            //await LoadSubclasses();
 
-            await LoadRaces();
-            await LoadSubraces();
+            //await LoadRaces();
+            //await LoadSubraces();
 
-            await LoadMonsters();
+            //await LoadMonsters();
 
             //// Load the foreign keys for the above types
-            //await LoadForeignKeys();
+            //await LoadFeatureRelationships();
+            //await LoadProficiencyRelationships();
+            //await LoadRaceRelationships();
+            //await LoadSubraceRelationships();
+            await LoadSpellRelationships();
 
             //// Since we loaded data with no FKs, tighten up
             //// the referential integrity constraints
@@ -75,6 +79,46 @@ namespace DM.Data.Utilities.DataLoadUtility
                         "INSERT INTO Classes " +
                         "([Id], [Index], [Name], [HitDie], [Source]) VALUES " +
                         $"('{@class.ID}', '{@class.Index}', '{@class.Name}', '{@class.HitDie}', '{@class.Source}')");
+                }
+            }
+        }
+
+        private static async Task LoadFeatureRelationships()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nLoading feature relationships from API");
+
+            Console.WriteLine("  *  Loading features");
+            var features = await _apiHelper.LoadData<Feature>("/api/features");
+
+            Console.WriteLine("  *  Loading classes");
+            var classes = await _apiHelper.LoadData<Class>("/api/classes");
+
+            Console.WriteLine("  *  Loading subclasses");
+            var subclasses = await _apiHelper.LoadData<Subclass>("/api/subclasses");
+            Console.ForegroundColor = ForegroundColor;
+
+            if (features.Any())
+            {
+                await using var connection = new SqlConnection(ConnectionString);
+
+                foreach (var feature in features)
+                {
+                    Console.WriteLine($"Updating relationships for feature {feature.Index}");
+
+                    if (feature.Class != null)
+                    {
+                        await connection.ExecuteAsync($@"UPDATE Features
+                                            SET ClassId='{classes.First(x => x.Name == feature.Class.Name).ID}'
+                                            WHERE ID='{feature.ID}'");
+                    }
+
+                    if (feature.Subclass != null)
+                    {
+                        await connection.ExecuteAsync($@"UPDATE Features
+                                            SET SubclassId='{subclasses.First(x => x.Name == feature.Subclass.Name).ID}'
+                                            WHERE ID='{feature.ID}'");
+                    }
                 }
             }
         }
@@ -148,6 +192,150 @@ namespace DM.Data.Utilities.DataLoadUtility
             }
         }
 
+        private static async Task LoadProficiencyRelationships()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nLoading proficiency relationships from API");
+
+            Console.WriteLine("  *  Loading proficiencies");
+            var proficiencies = await _apiHelper.LoadData<Proficiency>("/api/proficiencies");
+
+            Console.WriteLine("  *  Loading classes and subclasses");
+            var classes = await _apiHelper.LoadData<Class>("/api/classes");
+            var subclasses = await _apiHelper.LoadData<Subclass>("/api/subclasses");
+
+            Console.WriteLine("  *  Loading races and subraces");
+            var races = await _apiHelper.LoadData<Race>("/api/races");
+            var subraces = await _apiHelper.LoadData<Subrace>("/api/subraces");
+            Console.ForegroundColor = ForegroundColor;
+
+            if (proficiencies.Any())
+            {
+                await using var connection = new SqlConnection(ConnectionString);
+
+                foreach (var proficiency in proficiencies)
+                {
+                    Console.WriteLine($"Updating relationships for proficiency {proficiency.Index}");
+
+                    if (proficiency.Classes != null && proficiency.Classes.Any())
+                    {
+                        foreach (var @class in proficiency.Classes)
+                        {
+                            Console.WriteLine($"Saving proficiency for class {@class.Name}");
+
+                            var id = Guid.NewGuid();
+
+                            await connection.ExecuteAsync(
+                                $@"INSERT INTO ClassProficiencies ([ID], [ClassId], [ProficiencyId]) VALUES ('{id}', '{classes.First(x => x.Name == @class.Name).ID}', '{proficiency.ID}')");
+                        }
+                    }
+
+                    if (proficiency.Races != null && proficiency.Races.Any())
+                    {
+                        foreach (var race in proficiency.Races)
+                        {
+                            Console.WriteLine($"Saving proficiency for race {race.Name}");
+
+                            var id = Guid.NewGuid();
+
+                            await connection.ExecuteAsync(
+                                $@"INSERT INTO RaceProficiencies ([ID]) VALUES ('{id}')");
+
+                            if (race.URL.Contains("/subraces/"))
+                            {
+                                var subrace = subraces.First(x => x.Name == race.Name);
+
+                                await connection.ExecuteAsync(
+                                    $@"UPDATE RaceProficiencies SET [SubraceId] = '{subrace.ID}', [ProficiencyId] = '{proficiency.ID}' WHERE ID = '{id}'");
+                            }
+                            else
+                            {
+                                await connection.ExecuteAsync(
+                                    $@"UPDATE RaceProficiencies SET [RaceId] = '{races.First(x => x.Name == race.Name).ID}', [ProficiencyId] = '{proficiency.ID}' WHERE ID = '{id}'");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static async Task LoadRaceRelationships()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nLoading race relationships from API");
+
+            Console.WriteLine("  *  Loading races");
+            var races = await _apiHelper.LoadData<Race>("/api/races");
+
+            Console.WriteLine("  *  Loading ability scores");
+            var abilityScores = await _apiHelper.LoadData<AbilityScore>("/api/ability-scores");
+
+            Console.WriteLine("  *  Loading languages");
+            var languages = await _apiHelper.LoadData<Language>("/api/languages");
+
+            Console.WriteLine("  *  Loading traits");
+            var traits = await _apiHelper.LoadData<Trait>("/api/traits");
+
+            // Bug fix for trait
+            traits.First(x => x.Name == "Internal Legacy").Name = "Infernal Legacy";
+
+            Console.ForegroundColor = ForegroundColor;
+
+            if (races.Any())
+            {
+                await using var connection = new SqlConnection(ConnectionString);
+
+                foreach (var race in races)
+                {
+                    Console.WriteLine($"Updating relationships for race {race.Index}");
+
+                    if (race.AbilityBonuses != null && race.AbilityBonuses.Any())
+                    {
+                        foreach (var bonus in race.AbilityBonuses)
+                        {
+                            var ability = abilityScores.First(x => x.Name == bonus.Name);
+
+                            await connection.ExecuteAsync(
+                                $@"INSERT INTO RacialBonuses ([RaceId], [AbilityScoreId], [Bonus]) VALUES ('{race.ID}', '{ability.ID}', {bonus.Bonus})");
+                        }
+                    }
+
+                    if (race.Languages != null && race.Languages.Any())
+                    {
+                        foreach (var language in race.Languages)
+                        {
+                            // One-off bugfix for orc v. orcish as language name
+                            if (language.Name == "Orcish")
+                                language.Name = "Orc";
+
+                            var lang = languages.First(x => x.Name == language.Name);
+
+                            await connection.ExecuteAsync(
+                                $@"INSERT INTO RaceLanguageDefaults ([RaceId], [LanguageId]) VALUES ('{race.ID}', '{lang.ID}')");
+                        }
+                    }
+
+                    if (race.Traits != null && race.Traits.Any())
+                    {
+                        foreach (var trait in race.Traits)
+                        {
+                            // One-off bugfix for trait name in half-orc data
+                            if (trait.Name == "Restless Endurance")
+                                trait.Name = "Relentless Endurance";
+
+                            if (trait.Name == "Internal Legacy")
+                                trait.Name = "Infernal Legacy";
+
+                            var t = traits.First(x => x.Name == trait.Name);
+
+                            await connection.ExecuteAsync(
+                                $@"INSERT INTO RacialTraits ([RaceId], [TraitId]) VALUES ('{race.ID}', '{t.ID}')");
+                        }
+                    }
+                }
+            }
+        }
+
         private static async Task LoadRaces()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -199,6 +387,53 @@ namespace DM.Data.Utilities.DataLoadUtility
             }
         }
 
+        private static async Task LoadSpellRelationships()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nLoading spell relationships from API");
+
+            Console.WriteLine("  *  Loading spells");
+            var spells = await _apiHelper.LoadData<Spell>("/api/spells");
+
+            Console.WriteLine("  *  Loading classes");
+            var classes = await _apiHelper.LoadData<Class>("/api/classes");
+
+            Console.WriteLine("  *  Loading subclasses");
+            var subclasses = await _apiHelper.LoadData<Subclass>("/api/subclasses");
+
+            Console.ForegroundColor = ForegroundColor;
+
+            if (spells.Any())
+            {
+                await using var connection = new SqlConnection(ConnectionString);
+
+                foreach (var spell in spells)
+                {
+                    Console.WriteLine($"Updating relationships for spell {spell.Index}");
+
+                    // Class relationships
+                    if (spell.Classes != null && spell.Classes.Any())
+                    {
+                        foreach (var @class in spell.Classes)
+                        {
+                            await connection.ExecuteAsync(
+                                $@"INSERT INTO ClassSpells ([ClassId], [SpellId]) VALUES ('{classes.First(x => x.Name == @class.Name).ID}', '{spell.ID}')");
+                        }
+                    }
+
+                    // Subclass relationship
+                    if (spell.Subclasses != null && spell.Subclasses.Any())
+                    {
+                        foreach (var subclass in spell.Subclasses)
+                        {
+                            await connection.ExecuteAsync(
+                                $@"INSERT INTO SubclassSpells ([SubclassId], [SpellId]) VALUES ('{subclasses.First(x => x.Name == subclass.Name).ID}', '{spell.ID}')");
+                        }
+                    }
+                }
+            }
+        }
+
         private static async Task LoadSpells()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -240,9 +475,6 @@ namespace DM.Data.Utilities.DataLoadUtility
                         ,'{spell.Source}'
                         ,'{spell.Duration}')";
 
-                    // todo classes
-                    // todo subclasses
-
                     await connection.ExecuteAsync(sql);
                 }
 
@@ -271,6 +503,31 @@ namespace DM.Data.Utilities.DataLoadUtility
                         "INSERT INTO Subclasses " +
                         "([Id], [Index], [Name], [SubclassFlavor], [Description], [Source]) VALUES " +
                         $"('{subclass.ID}', '{subclass.Index}', '{subclass.Name}', '{subclass.SubclassFlavor}', '{string.Join(" ", subclass.Description)}', '{subclass.Source}')");
+                }
+            }
+        }
+
+        private static async Task LoadSubraceRelationships()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nLoading subrace relationships from API");
+
+            Console.WriteLine("  *  Loading subraces");
+            var subraces = await _apiHelper.LoadData<Subrace>("/api/subraces");
+
+            Console.WriteLine("  *  Loading races");
+            var races = await _apiHelper.LoadData<Race>("/api/races");
+            Console.ForegroundColor = ForegroundColor;
+
+            if (subraces.Any())
+            {
+                await using var connection = new SqlConnection(ConnectionString);
+
+                foreach (var subrace in subraces)
+                {
+                    Console.WriteLine($"Updating relationships for subrace {subrace.Index}");
+
+                    await connection.ExecuteAsync($@"UPDATE Subraces SET RaceId = '{races.First(x => x.Name == subrace.Race.Name).ID}' WHERE ID = '{subrace.ID}'");
                 }
             }
         }
@@ -313,6 +570,13 @@ namespace DM.Data.Utilities.DataLoadUtility
                 foreach (var trait in traits)
                 {
                     Console.WriteLine($"Loading trait {trait.Index}");
+
+                    // Bug fix for typo in data
+                    if (trait.Index == "internal-legacy")
+                        trait.Index = "infernal-legacy";
+
+                    if (trait.Name == "Internal Legacy")
+                        trait.Name = "Infernal Legacy";
 
                     await connection.ExecuteAsync(
                         "INSERT INTO Traits " +

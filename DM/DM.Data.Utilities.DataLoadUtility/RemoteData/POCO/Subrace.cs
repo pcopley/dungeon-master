@@ -14,6 +14,8 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
 
         public string Name { get; set; }
 
+        public ReferenceData Race { get; set; }
+
         /// <summary>
         /// The http://www.dnd5eapi.co/ source URL
         /// </summary>

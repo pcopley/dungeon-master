@@ -7,6 +7,8 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
 {
     public class Subclass
     {
+        public ReferenceData Class { get; set; }
+
         [JsonProperty("desc")]
         public string[] Description { get; set; }
 
