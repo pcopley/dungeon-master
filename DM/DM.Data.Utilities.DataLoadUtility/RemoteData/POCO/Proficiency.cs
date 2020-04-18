@@ -1,15 +1,9 @@
 ﻿using Newtonsoft.Json;
 
-namespace DM.Data.Utilities.DataLoadUtility.RemoteData
+namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
 {
-    public class AbilityScore : IRemoteData
+    public class Proficiency : IRemoteData
     {
-        [JsonProperty("desc")]
-        public string[] Description { get; set; }
-
-        [JsonProperty("full_name")]
-        public string FullName { get; set; }
-
         [JsonProperty("_id")]
         public string ID { get; set; }
 
@@ -22,5 +16,7 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData
         /// </summary>
         [JsonProperty("url")]
         public string Source { get; set; }
+
+        public string Type { get; set; }
     }
 }

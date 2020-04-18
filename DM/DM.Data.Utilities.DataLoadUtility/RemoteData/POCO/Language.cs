@@ -1,18 +1,9 @@
 ﻿using Newtonsoft.Json;
 
-namespace DM.Data.Utilities.DataLoadUtility.RemoteData
+namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
 {
-    public class Skill : IRemoteData
+    public class Language : IRemoteData
     {
-        [JsonProperty("ability_score")]
-        public ReferenceData AbilityScore { get; set; }
-
-        [JsonIgnore]
-        public string AbilityScoreID { get; set; }
-
-        [JsonProperty("desc")]
-        public string[] Description { get; set; }
-
         [JsonProperty("_id")]
         public string ID { get; set; }
 
@@ -20,10 +11,17 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData
 
         public string Name { get; set; }
 
+        public string Script { get; set; }
+
         /// <summary>
         /// The http://www.dnd5eapi.co/ source URL
         /// </summary>
         [JsonProperty("url")]
         public string Source { get; set; }
+
+        public string Type { get; set; }
+
+        [JsonProperty("typical_speakers")]
+        public string[] TypicalSpeakers { get; set; }
     }
 }
