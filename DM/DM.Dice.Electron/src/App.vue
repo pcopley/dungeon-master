@@ -34,6 +34,10 @@
 
         <v-content>
             <v-container>
+ 
+                <v-autocomplete v-model="searchbox" :items="searchItems" placeholder="Search for a monster...">
+                    <template v-slot:append-outer><v-btn text v-on:click="clearSearch">CLEAR</v-btn></template>
+                </v-autocomplete>
                 <v-item-group>
                     <v-row v-if="monsters">
                         <v-col v-for="(monster, i) in monstersMinusRaces.slice(minPage, maxPage)"
@@ -120,6 +124,7 @@
             source: String,
         },
         data: () => ({
+            searchbox: null,
             page: 1,
             perPage: 12,
             drawer: null,
@@ -150,7 +155,6 @@
                             .then(response => (k.details = response))
                         k.isActive = false
                         var newName = k.name.split(' ').join('-').toLowerCase();
-                        console.log(newName)
                         newName = newName.replace('adult-', '').replace('ancient-', '');
                         k.image = 'https://www.aidedd.org/dnd/images/' + newName + '.jpg'
                     });
@@ -158,6 +162,11 @@
 
         },
         mixins: [Vue2Filters.mixin],
+        methods: {
+            clearSearch() {
+                this.searchbox = null;
+            }
+        },
         computed: {
             minPage: function () {
                 return (this.page - 1) * this.perPage
@@ -173,12 +182,17 @@
             },
             monstersMinusRaces: function () {
                 return this.monsters.filter(x => {
-                    if (x.details != null) {
-                        console.log(x.details.data)
-                        return !x.details.data.subtype.includes('any ') || !x.details.data.alignment.includes('any ');
+                    if (this.searchbox != null) {
+                        return x.name.includes(this.searchbox)
                     }
                     return true;
                 })
+            },
+            searchItems: function () {
+                if (this.monsters) {
+                    return this.monsters.map(a => a.name);
+                }
+                return null;
             }
         }
     }
