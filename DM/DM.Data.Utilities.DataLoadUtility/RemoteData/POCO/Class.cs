@@ -17,6 +17,9 @@ namespace DM.Data.Utilities.DataLoadUtility.RemoteData.POCO
 
         public string Name { get; set; }
 
+        [JsonProperty("saving_throws")]
+        public ReferenceData[] SavingThrows { get; set; }
+
         /// <summary>
         /// The http://www.dnd5eapi.co/ source URL
         /// </summary>

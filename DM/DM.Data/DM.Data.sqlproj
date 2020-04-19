@@ -82,6 +82,7 @@
     <Build Include="dbo\RacialTraits.sql" />
     <Build Include="dbo\ClassSpells.sql" />
     <Build Include="dbo\SubclassSpells.sql" />
+    <Build Include="dbo\ClassSavingThrows.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="DM.Data.refactorlog" />

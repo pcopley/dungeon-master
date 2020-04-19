@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -15,14 +16,13 @@ namespace DM.Data.Utilities.DataLoadUtility
         private const string ConnectionString =
             @"Data Source=(LocalDb)\MSSQLLocalDB;Initial Catalog=DM;Trusted_Connection=True;";
 
-        private static readonly ConsoleColor BackgroundColor = Console.BackgroundColor;
-
         private static readonly ConsoleColor ForegroundColor = Console.ForegroundColor;
 
         private static ApiHelper _apiHelper;
 
         public static async Task Main(string[] args)
         {
+            var sw = Stopwatch.StartNew();
             _apiHelper = new ApiHelper();
 
             //await TruncateAllTheThings();
@@ -32,19 +32,13 @@ namespace DM.Data.Utilities.DataLoadUtility
 
             //// Types with dependencies, but loading the data first
             //await LoadSkills();
-
             //await LoadSpells();
-
             //await LoadFeatures();
-
             //await LoadTraits();
-
             //await LoadClasses();
             //await LoadSubclasses();
-
             //await LoadRaces();
             //await LoadSubraces();
-
             //await LoadMonsters();
 
             //// Load the foreign keys for the above types
@@ -52,11 +46,15 @@ namespace DM.Data.Utilities.DataLoadUtility
             //await LoadProficiencyRelationships();
             //await LoadRaceRelationships();
             //await LoadSubraceRelationships();
-            await LoadSpellRelationships();
+            //await LoadSpellRelationships();
+            await LoadClassRelationships();
 
-            //// Since we loaded data with no FKs, tighten up
-            //// the referential integrity constraints
-            //await EnforceForeignKeys();
+            ////// Since we loaded data with no FKs, tighten up
+            ////// the referential integrity constraints
+            ////await EnforceForeignKeys();
+
+            sw.Stop();
+            Console.WriteLine($"Loaded in {sw.ElapsedMilliseconds} ms");
         }
 
         private static async Task LoadClasses()
@@ -79,6 +77,38 @@ namespace DM.Data.Utilities.DataLoadUtility
                         "INSERT INTO Classes " +
                         "([Id], [Index], [Name], [HitDie], [Source]) VALUES " +
                         $"('{@class.ID}', '{@class.Index}', '{@class.Name}', '{@class.HitDie}', '{@class.Source}')");
+                }
+            }
+        }
+
+        private static async Task LoadClassRelationships()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nLoading class relationships from API");
+
+            Console.WriteLine("  *  Loading classes");
+            var classes = await _apiHelper.LoadData<Class>("/api/classes");
+
+            Console.WriteLine("  *  Loading saving throws");
+            var abilityScores = await _apiHelper.LoadData<AbilityScore>("/api/ability-scores");
+            Console.ForegroundColor = ForegroundColor;
+
+            if (classes.Any())
+            {
+                await using var connection = new SqlConnection(ConnectionString);
+
+                foreach (var @class in classes)
+                {
+                    Console.WriteLine($"Updating saving throws for class {@class.Index}");
+
+                    if (@class.SavingThrows != null && @class.SavingThrows.Any())
+                    {
+                        foreach (var savingThrow in @class.SavingThrows)
+                        {
+                            await connection.ExecuteAsync(
+                                $@"INSERT INTO [ClassSavingThrows] ([ClassId], [AbilityScoreId]) VALUES ('{@class.ID}', '{abilityScores.First(x => x.Name == savingThrow.Name).ID}')");
+                        }
+                    }
                 }
             }
         }
