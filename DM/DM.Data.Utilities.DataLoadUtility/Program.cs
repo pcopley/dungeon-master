@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
@@ -47,11 +48,8 @@ namespace DM.Data.Utilities.DataLoadUtility
             //await LoadRaceRelationships();
             //await LoadSubraceRelationships();
             //await LoadSpellRelationships();
-            await LoadClassRelationships();
-
-            ////// Since we loaded data with no FKs, tighten up
-            ////// the referential integrity constraints
-            ////await EnforceForeignKeys();
+            //await LoadClassRelationships();
+            await LoadMonsterRelationships();
 
             sw.Stop();
             Console.WriteLine($"Loaded in {sw.ElapsedMilliseconds} ms");
@@ -196,6 +194,76 @@ namespace DM.Data.Utilities.DataLoadUtility
             }
         }
 
+        private static async Task LoadMonsterRelationships()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nLoading monster relationships from API");
+
+            Console.WriteLine("  *  Loading monsters");
+            var monsters = await _apiHelper.LoadData<Monster>("/api/monsters");
+
+            Console.WriteLine("  *  Loading ability scores");
+            var abilityScores = await _apiHelper.LoadData<AbilityScore>("/api/ability-scores");
+
+            await using var connection = new SqlConnection(ConnectionString);
+
+            foreach (var monster in monsters)
+            {
+                // Save and load speeds
+                // proficiencies
+                // vulnerabilities (dt)
+                // resistances (dt)
+                // immunities (dt)
+                // immunities (cond)
+                // abilities (name/desc pairs)
+                // actions
+                foreach (var action in monster.Actions)
+                {
+                    Console.WriteLine($"Updating actions for {monster.Index}");
+
+                    await connection.ExecuteAsync($@"INSERT INTO MonsterActions
+                        ([Id], [Name], [Description], [UsageLimit], [UsageTimeframe], [DC_AbilityScoreId], [DC_Value], [DC_SuccessType])
+                        VALUES ('{Guid.NewGuid()}', '{action.Name}', '{action.Description}', {action.Usage?.Times}, '{action.Usage?.Type}', '{abilityScores.First(x => x.Name == action.DifficultyClass?.AbilityScore.Name)?.ID}', {action.DifficultyClass?.Value ?? 0}, '{action.DifficultyClass?.SuccessType}')");
+                }
+
+                foreach (var action in monster.LegendaryActions)
+                {
+                    Console.WriteLine($"Updating legendary actions for {monster.Index}");
+
+                    await connection.ExecuteAsync($@"INSERT INTO MonsterActions
+                        ([Id], [Name], [Description], [UsageLimit], [UsageTimeframe], [DC_AbilityScoreId], [DC_Value], [DC_SuccessType], [IsLegendary])
+                        VALUES ('{Guid.NewGuid()}', '{action.Name}', '{action.Description}', {action.Usage?.Times ?? 0}, '{action.Usage?.Type}', '{abilityScores.First(x => x.Name == action.DifficultyClass?.AbilityScore.Name)?.ID}', {action.DifficultyClass?.Value ?? 0}, '{action.DifficultyClass?.SuccessType}', 1)");
+                }
+
+                var fieldsThatCouldBeEmptyString = new[]
+                {
+                    "UsageTimeframe",
+                    "DC_AbilityScoreId",
+                    "DC_SuccessType"
+                };
+
+                var fieldsThatCouldBeErroneousZero = new[]
+                {
+                    "UsageLimit",
+                    "DC_Value"
+                };
+
+                foreach (var field in fieldsThatCouldBeEmptyString)
+                {
+                    await connection.ExecuteAsync($"UPDATE MonsterActions SET {field} = NULL WHERE {field} = ''");
+                }
+
+                foreach (var field in fieldsThatCouldBeErroneousZero)
+                {
+                    await connection.ExecuteAsync($"UPDATE MonsterActions SET {field} = NULL WHERE {field} = 0");
+                }
+
+                // /actions
+            }
+
+            Console.ForegroundColor = ForegroundColor;
+        }
+
         private static async Task LoadMonsters()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -232,7 +300,6 @@ namespace DM.Data.Utilities.DataLoadUtility
 
             Console.WriteLine("  *  Loading classes and subclasses");
             var classes = await _apiHelper.LoadData<Class>("/api/classes");
-            var subclasses = await _apiHelper.LoadData<Subclass>("/api/subclasses");
 
             Console.WriteLine("  *  Loading races and subraces");
             var races = await _apiHelper.LoadData<Race>("/api/races");
